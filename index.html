@@ -8,6 +8,10 @@ body {
 	font-family: arial;
 }
 
+a {
+	color:gray;font-size:small;
+}
+
 .container {
 display: none;
 }
@@ -156,7 +160,7 @@ MIDI.loadPlugin(function() {
 		self.pianoSize = 7;
 		self.notes = [["c","b#"], ["db", "c#"], ["d"], ["eb", "d#"], ["e", "fb"], ["f", "e#"], ["gb", "f#"], ["g"], ["ab", "g#"], ["a"], ["bb", "a#"], ["b", "cb"]];
 		self.whitenotes = ["c", "d", "e", "f", "g", "a", "b"];
-		self.velocity = 100;
+		self.velocity = 80;
 		
 		// Fields
 		self.currentChord;
@@ -195,8 +199,8 @@ MIDI.loadPlugin(function() {
 		}
 		
 		self.btnPrev = function() {
-			if (self.chordIndex == self.chordArray.length-1)
-				self.chordIndex = -1;
+			if (self.chordIndex == 0)
+				self.chordIndex = 1;
 			$(".highlight").removeClass("highlight");
 			self.chordIndex--;
 			self.highlightCurrentChord();
@@ -494,8 +498,8 @@ MIDI.loadPlugin(function() {
 		<button class="btnReset" style="width: 200px;font-size:larger">Reset</button>
 		<button class="btnPlay" style="width: 200px;font-size:larger">Play</button>
 		<button class="btnNext" style="width: 200px;font-size:larger">Next</button>
-		<br />
-		<span style="color:gray;font-size:small">Created by NC</span>
+		<br /><br /><br />
+		<a href="https://github.com/naderchehab/chordbuilder" target="_blank">Created by NC</a>
 		</div>
 	</div>
 </body>
