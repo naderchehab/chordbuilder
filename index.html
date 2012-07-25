@@ -144,6 +144,7 @@ String.prototype.capitalize = function(){
 };
 
 $(function() { 
+"use strict";
 MIDI.loadPlugin(function() {
 	$(".loading-indicator").hide();
 	$(".container").show();
@@ -164,15 +165,18 @@ MIDI.loadPlugin(function() {
 		// Constructor
 		self.init = function() {
 			$("textarea").val("Ebm7/Bb octave 3 double root\nAbm7 octave 3 double root\nDb7/B octave 3 double root\nGbM7/Bb octave 3 double root lower\nCm7(b5)/Bb octave 3 double root\nBM7/Bb octave 2 double root\nBb7(#5)/Ab octave 2 double root");
+			//$("textarea").val("Dm9/F no root double root\nG13 octave 2\nCM9/E octave 3  no root double root\nA7(b9)/G octave 2 no root double root");
 			self.buildPiano();
-			$("textarea").change(self.reset);
-			$("button.btnReset").click(self.reset);
-			$("button.btnNext").click(self.next);
-			self.reset();
+			$("textarea").change(self.btnReset);
+			$("button.btnReset").click(self.btnReset);
+			$("button.btnNext").click(self.btnNext);
+			$("button.btnPrev").click(self.btnPrev);
+			$("button.btnPlay").click(self.btnPlay);
+			self.btnReset();
 		}
 		
 		// Reset button click
-		self.reset = function() {
+		self.btnReset = function() {
 			self.chordIndex = 0;
 			$(".highlight").removeClass("highlight");
 			self.chordArray = self.getChordArray();
@@ -181,12 +185,25 @@ MIDI.loadPlugin(function() {
 		}
 	
 		// Next button click
-		self.next = function() {
+		self.btnNext = function() {
 			if (self.chordIndex == self.chordArray.length-1)
 				self.chordIndex = -1;
 			$(".highlight").removeClass("highlight");
 			self.chordIndex++;
 			self.highlightCurrentChord();
+			self.play(self.currentChord);
+		}
+		
+		self.btnPrev = function() {
+			if (self.chordIndex == self.chordArray.length-1)
+				self.chordIndex = -1;
+			$(".highlight").removeClass("highlight");
+			self.chordIndex--;
+			self.highlightCurrentChord();
+			self.play(self.currentChord);
+		}
+		
+		self.btnPlay = function() {
 			self.play(self.currentChord);
 		}
 		
@@ -203,7 +220,7 @@ MIDI.loadPlugin(function() {
 		self.play = function(chord) {							
 			$.each(chord.audioNotes, function(index, value) {
 				value = value[0].toUpperCase() + value.substring(1);
-				MIDI.noteOn(0, MIDI.keyToNote[value]+1, self.velocity, 0);	
+				MIDI.noteOn(0, MIDI.keyToNote[value], self.velocity, 0);	
 			});
 		}
 		
@@ -261,19 +278,22 @@ MIDI.loadPlugin(function() {
 				chordObject.intervals.push(0);
 				
 			// Double Root
-			if (chord.indexOf("double root lower") != -1) {
+			if (chord.indexOf("double root higher") != -1) {
+				chordObject.intervals.push(0);
+				chordObject.intervals.push(-12);
+			}
+			else if (chord.indexOf("double root lower") != -1) {
 				chordObject.intervals.push(-24);
 				chordObject.intervals.push(-36);
 			} else if (chord.indexOf("double root") != -1) {
 				chordObject.intervals.push(-12);
 				chordObject.intervals.push(-24);
 			}
-
-			
+		
 			var accidental = self.getAccidental(chord);
 			var key;
 			var keyIndex = accidental.length > 0 ? 2 : 1;
-
+		
 			if (chord[keyIndex] == "M") {
 				chordObject.key = "major";
 				chordObject.intervals.push(4);
@@ -284,50 +304,59 @@ MIDI.loadPlugin(function() {
 			}
 			else {
 				chordObject.key = "dominant";
-				chordObject.intervals.push(4);
+				if (chord.indexOf("13") == -1)
+					chordObject.intervals.push(4);
 			}
-			
+		
 			if (chord.indexOf("(b5)") != -1)
 				chordObject.intervals.push(6);
 			else if (chord.indexOf("(#5)") != -1)
 				chordObject.intervals.push(8);
-			else
+			else if (chord.indexOf("13") == -1)
 				chordObject.intervals.push(7);
-			
-			// Are we done yet?
-			if (keyIndex == chord.length-1)
-				return chordObject;
 			
 			// 7th, 9th, 11th and 13th
 			var extensionIndex = chordObject.key != "dominant" ? keyIndex + 1 : keyIndex;
-			chordObject.extension = chord[extensionIndex];
-			if (chordObject.extension == "1")
-				chordObject.extension = chord[extensionIndex] + chord[extensionIndex+1];
 			
-			switch(chordObject.extension) {
-				case "7":
-				if (chordObject.key == "major")
-					chordObject.intervals.push(11);
-				else
-					chordObject.intervals.push(10);
-					break;
-				case "9":
-				if (key == "major")
-					chordObject.intervals.push(11);
-				else
-					chordObject.intervals.push(10);
-				chordObject.intervals.push(14);
-				break;
-				case "11":
-				break;
-			}
-			
-			if (chord.indexOf("add9")) {
-			}
-
 			// Are we done yet?
-			if (extensionIndex == chord.length-1)
-				return chordObject.intervals;
+			if (extensionIndex == chord.length)
+				return chordObject;
+				
+				
+			if (chord.indexOf("add9") != -1) {
+				chordObject.intervals.push(14);
+			}
+			else {
+				chordObject.extension = chord[extensionIndex];
+				if (chordObject.extension == "1")
+					chordObject.extension = chord[extensionIndex] + chord[extensionIndex+1];
+								
+				switch(chordObject.extension) {
+					case "7":
+					if (chordObject.key == "major")
+						chordObject.intervals.push(11);
+					else
+						chordObject.intervals.push(10);
+						
+					if (chord.indexOf("(b9)") != -1)
+						chordObject.intervals.push(13);
+						break;
+					case "9":
+					if (chordObject.key == "major")
+						chordObject.intervals.push(11);
+					else
+						chordObject.intervals.push(10);
+					chordObject.intervals.push(14);
+					break;
+					case "11":
+					break;
+					case "13":
+						chordObject.intervals.push(10);
+						chordObject.intervals.push(16);
+						chordObject.intervals.push(21);
+					break;
+				}
+			}
 			
 			// Slash chord
 			var indexOfSlash = chord.indexOf("/");
@@ -338,21 +367,6 @@ MIDI.loadPlugin(function() {
 					return value < diff ? value + 12 : value;
 				});
 				chordObject.intervals.unshift(diff);
-			}
-			
-			var third, seventh;
-			if (key == "minor") {
-				third = 3;
-				seventh = 10;
-			}
-			else {
-				third = 4;
-				if (key == "major") {
-					seventh = 11;
-				}
-				else {
-					seventh = 10;
-				}
 			}
 
 			return chordObject;			
@@ -476,7 +490,9 @@ MIDI.loadPlugin(function() {
 		<label for="chordlist" style="vertical-align: top">Chord List:</label><br/>
 		<textarea id="chordlist" style="height:150px; width: 400px;"></textarea>
 		<br/><br/>
+		<button class="btnPrev" style="width: 200px;font-size:larger">Prev</button>
 		<button class="btnReset" style="width: 200px;font-size:larger">Reset</button>
+		<button class="btnPlay" style="width: 200px;font-size:larger">Play</button>
 		<button class="btnNext" style="width: 200px;font-size:larger">Next</button>
 		<br />
 		<span style="color:gray;font-size:small">Created by NC</span>
