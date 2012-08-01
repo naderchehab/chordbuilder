@@ -9,6 +9,7 @@ MIDI.loadPlugin(function() {
 	$(".loading-indicator").hide();
 	$(".container").show();
 	$("body").css("background-color", "#EEEEEE");
+	
 	var piano = function() {
 		var self = this;
 		
@@ -119,110 +120,95 @@ MIDI.loadPlugin(function() {
 		self.parseChord = function(chord) {
 			var chordObject = {};
 			chordObject.intervals = [];
+			
+			var regex = /^([A-G])(#|b)?(min|maj|aug|dim|sus|m|M)?(7|9|13)?(\(b5\)|\(#5\)|\(add9\))?(\/)?([A-G])?(#|##|b|bb)?(?:\soctave\s)?([1-8])?\s?(no\sroot)?\s?(double\sroot)?\s?(lower|higher)?/;
+			var match = regex.exec(chord);
+			
+			chordObject.root = match[1] + match[2];
+			chordObject.accidental = match[2];
+			chordObject.chord = match[3];
+			chordObject.extension = match[4];
+			chordObject.extension2 = match[5];
+			chordObject.isSlashChord = match[6] != undefined;
+			chordObject.slash = match[7] + match[8];
+			chordObject.octave = match[9];
+			chordObject.noRoot = match[10];
+			chordObject.doubleRoot = match[11];
+			chordObject.doubleRootPos = match[12];
+		
 			chordObject.name = chord;
 			
-			// Octave
-			var indexOfOctave = chord.indexOf("octave");
+			chordObject.rootAndOctave = self.getNote(chord) + chordObject.octave;
 			
-			if (indexOfOctave != -1) {
-				chordObject.octave = chord[indexOfOctave+7];
-			}
-			else {
-				chordObject.octave = 3;
-			}
-			
-			chordObject.root = self.getNote(chord) + chordObject.octave;
+			//console.log(match, chordObject);
 			
 			// No Root
-			if (chord.indexOf("no root") == -1)
+			if (!chordObject.noRoot)
 				chordObject.intervals.push(0);
 				
 			// Double Root
-			if (chord.indexOf("double root higher") != -1) {
+			if (chordObject.doubleRoot && chordObject.doubleRootPos == "higher") {
 				chordObject.intervals.push(0);
 				chordObject.intervals.push(-12);
 			}
-			else if (chord.indexOf("double root lower") != -1) {
+			else if (chordObject.doubleRoot && chordObject.doubleRootPos == "lower") {
 				chordObject.intervals.push(-24);
 				chordObject.intervals.push(-36);
-			} else if (chord.indexOf("double root") != -1) {
+			} else if (chordObject.doubleRoot) {
 				chordObject.intervals.push(-12);
 				chordObject.intervals.push(-24);
 			}
-		
-			var accidental = self.getAccidental(chord);
-			var key;
-			var keyIndex = accidental.length > 0 ? 2 : 1;
-		
-			if (chord[keyIndex] == "M") {
-				chordObject.key = "major";
+
+			if (chordObject.chord == "maj" || chordObject.chord == "M") {
 				chordObject.intervals.push(4);
 			}
-			else if (chord[keyIndex] == "m") {
-				chordObject.key = "minor";
+			else if (chordObject.chord == "min" || chordObject.chord == "m") {
 				chordObject.intervals.push(3);
 			}
 			else {
-				chordObject.key = "dominant";
-				if (chord.indexOf("13") == -1)
+				if (chordObject.extension == "13")
 					chordObject.intervals.push(4);
 			}
-		
-			if (chord.indexOf("(b5)") != -1)
-				chordObject.intervals.push(6);
-			else if (chord.indexOf("(#5)") != -1)
-				chordObject.intervals.push(8);
-			else if (chord.indexOf("13") == -1)
+			
+			if (chordObject.extension != "13")
 				chordObject.intervals.push(7);
-			
-			// 7th, 9th, 11th and 13th
-			var extensionIndex = chordObject.key != "dominant" ? keyIndex + 1 : keyIndex;
-			
-			// Are we done yet?
-			if (extensionIndex == chord.length)
-				return chordObject;
-				
-				
-			if (chord.indexOf("add9") != -1) {
+		
+			if (chordObject.extension2 == "(b5)")
+				chordObject.intervals.push(6);
+			else if (chordObject.extension2 == "(#5)")
+				chordObject.intervals.push(8);
+			else if (chordObject.extension2 == "(add9)")
 				chordObject.intervals.push(14);
-			}
-			else {
-				chordObject.extension = chord[extensionIndex];
-				if (chordObject.extension == "1")
-					chordObject.extension = chord[extensionIndex] + chord[extensionIndex+1];
-								
-				switch(chordObject.extension) {
-					case "7":
-					if (chordObject.key == "major")
-						chordObject.intervals.push(11);
-					else
-						chordObject.intervals.push(10);
-						
-					if (chord.indexOf("(b9)") != -1)
-						chordObject.intervals.push(13);
-						break;
-					case "9":
-					if (chordObject.key == "major")
-						chordObject.intervals.push(11);
-					else
-						chordObject.intervals.push(10);
-					chordObject.intervals.push(14);
-					break;
-					case "11":
-					break;
-					case "13":
-						chordObject.intervals.push(10);
-						chordObject.intervals.push(16);
-						chordObject.intervals.push(21);
-					break;
-				}
-			}
 			
+			switch(chordObject.extension) {
+				case "7":
+				if (chordObject.chord == "maj" || chordObject.chord == "M")
+					chordObject.intervals.push(11);
+				else
+					chordObject.intervals.push(10);
+					
+				if (chordObject.extension2 == "(b9)")
+					chordObject.intervals.push(13);
+					break;
+				case "9":
+				if (chordObject.key == "major")
+					chordObject.intervals.push(11);
+				else
+					chordObject.intervals.push(10);
+				chordObject.intervals.push(14);
+				break;
+				case "11":
+				break;
+				case "13":
+					chordObject.intervals.push(10);
+					chordObject.intervals.push(16);
+					chordObject.intervals.push(21);
+				break;
+			}
+
 			// Slash chord
-			var indexOfSlash = chord.indexOf("/");
-			if (indexOfSlash != -1) {
-				chordObject.slash = chord.substring(indexOfSlash+1);
-				var diff = self.getPosition(chordObject.root, chordObject.slash);
+			if (chordObject.isSlashChord) {
+				var diff = self.getPosition(chordObject.rootAndOctave, chordObject.slash);
 				chordObject.intervals = $.map(chordObject.intervals, function(value, index) {
 					return value < diff ? value + 12 : value;
 				});
@@ -292,11 +278,6 @@ MIDI.loadPlugin(function() {
 			return note[1] == "b" || note[1] == "#" ? note[0] + note[1] : note[0];
 		}
 		
-		// Get Accidental
-		self.getAccidental = function(key) {
-			return key[1] == "b" || key[1] == "#" ? key[1] : "";
-		}
-		
 		// Get chord array from input textarea
 		self.getChordArray = function() {
 			var array = $("textarea").val().split("\n");
@@ -308,7 +289,7 @@ MIDI.loadPlugin(function() {
 		self.highlightChord = function(chordObject) {
 			chordObject.audioNotes = [];
 			$.each(chordObject.intervals, function(index, value) {
-				var note = self.add(chordObject.root, value);
+				var note = self.add(chordObject.rootAndOctave, value);
 				note = note.replace("#", "s");
 				$("." + note).addClass("highlight");
 				chordObject.audioNotes.push(note);
