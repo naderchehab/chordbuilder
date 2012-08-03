@@ -25,8 +25,9 @@ MIDI.loadPlugin(function() {
 		
 		// Constructor
 		self.init = function() {
-			$("textarea").val("Ebm7/Bb octave 3 double root\nAbm7 octave 3 double root\nDb7/B octave 3 double root\nGbM7/Bb octave 3 double root lower\nCm7(b5)/Bb octave 3 double root\nBM7/Bb octave 2 double root\nBb7(#5)/Ab octave 2 double root");
-			//$("textarea").val("Dm9/F no root double root\nG13 octave 2\nCM9/E octave 3  no root double root\nA7(b9)/G octave 2 no root double root");
+			$("textarea").val("Ebm7/Bb octave 3\nAb7 octave 3\nDb7/B octave 3\nGbM7/Bb octave 3\nCm7(b5)/Bb octave 3\nBM7/Bb octave 2\nBb7(#5)/Ab octave 2");
+			//$("textarea").val("Dm9/F no root\nG13 octave 2\nCM9/E octave 3 no root\nA7(b9)/G octave 2 no root");
+
 			self.buildPiano();
 			$("textarea").change(self.btnReset);
 			$("button.btnReset").click(self.btnReset);
@@ -74,7 +75,7 @@ MIDI.loadPlugin(function() {
 			self.highlightChord(self.currentChord);
 			$(".chordName").text(self.currentChord.name.capitalize());
 			$(".rootName").text(self.currentChord.root.capitalize());
-			$(".seventh").text(self.add(self.currentChord.root, 10).capitalize());
+			$(".seventh").text(self.add(self.currentChord.rootAndOctave, 10).capitalize());
 		}
 		
 		// Play chord
@@ -121,17 +122,26 @@ MIDI.loadPlugin(function() {
 			var chordObject = {};
 			chordObject.intervals = [];
 			
-			var regex = /^([A-G])(#|b)?(min|maj|aug|dim|sus|m|M)?(7|9|13)?(\(b5\)|\(#5\)|\(add9\))?(\/)?([A-G])?(#|##|b|bb)?(?:\soctave\s)?([1-8])?\s?(no\sroot)?\s?(double\sroot)?\s?(lower|higher)?/;
+			var regex = /^([A-G])(#|b)?(min|maj|aug|dim|sus|m|M)?(7|9|13)?(\(b5\)|\(#5\)|\(add9\)|\(b9\))?(\/)?([A-G])?(#|##|b|bb)?(?:\soctave\s)?([1-8])?\s?(no\sroot)?\s?(double\sroot)?\s?(lower|higher)?/;
 			var match = regex.exec(chord);
 			
-			chordObject.root = match[1] + match[2];
+			if (match[2])
+				chordObject.root = match[1] + match[2];
+			else
+				chordObject.root = match[1];
+				
 			chordObject.accidental = match[2];
 			chordObject.chord = match[3];
 			chordObject.extension = match[4];
 			chordObject.extension2 = match[5];
 			chordObject.isSlashChord = match[6] != undefined;
-			chordObject.slash = match[7] + match[8];
-			chordObject.octave = match[9];
+			
+			if (match[8])
+				chordObject.slash = match[7] + match[8];
+			else 
+				chordObject.slash = match[7];
+				
+			chordObject.octave = match[9] ? match[9] : 3;
 			chordObject.noRoot = match[10];
 			chordObject.doubleRoot = match[11];
 			chordObject.doubleRootPos = match[12];
@@ -140,7 +150,7 @@ MIDI.loadPlugin(function() {
 			
 			chordObject.rootAndOctave = self.getNote(chord) + chordObject.octave;
 			
-			//console.log(match, chordObject);
+			// console.log(match, chordObject);
 			
 			// No Root
 			if (!chordObject.noRoot)
@@ -154,12 +164,12 @@ MIDI.loadPlugin(function() {
 			else if (chordObject.doubleRoot && chordObject.doubleRootPos == "lower") {
 				chordObject.intervals.push(-24);
 				chordObject.intervals.push(-36);
-			} else if (chordObject.doubleRoot) {
-				chordObject.intervals.push(-12);
+			} else //if (chordObject.doubleRoot) {
+				{chordObject.intervals.push(-12);
 				chordObject.intervals.push(-24);
 			}
 
-			if (chordObject.chord == "maj" || chordObject.chord == "M") {
+			if (chordObject.chord == "maj" || chordObject.chord == "M" || chordObject.chord == undefined) {
 				chordObject.intervals.push(4);
 			}
 			else if (chordObject.chord == "min" || chordObject.chord == "m") {
@@ -191,7 +201,7 @@ MIDI.loadPlugin(function() {
 					chordObject.intervals.push(13);
 					break;
 				case "9":
-				if (chordObject.key == "major")
+				if (chordObject.chord == "major" || chordObject.chord == "M")
 					chordObject.intervals.push(11);
 				else
 					chordObject.intervals.push(10);
