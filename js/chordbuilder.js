@@ -7,7 +7,7 @@ $(function() {
 "use strict";
 MIDI.loadPlugin(function() {
 	$(".loading-indicator").hide();
-	$(".container").show();
+	$(".page-container").show();
 	$("body").css("background-color", "#EEEEEE");
 	
 	var piano = function() {
@@ -75,7 +75,9 @@ MIDI.loadPlugin(function() {
 			self.highlightChord(self.currentChord);
 			$(".chordName").text(self.currentChord.name.capitalize());
 			$(".rootName").text(self.currentChord.root.capitalize());
-			$(".seventh").text(self.add(self.currentChord.rootAndOctave, 10).capitalize());
+			$(".third").text(self.currentChord.third.capitalize());
+			$(".fifth").text(self.currentChord.fifth.capitalize());
+			$(".seventh").text(self.currentChord.seventh.capitalize());
 		}
 		
 		// Play chord
@@ -170,9 +172,11 @@ MIDI.loadPlugin(function() {
 			}
 
 			if (chordObject.chord == "maj" || chordObject.chord == "M" || chordObject.chord == undefined) {
+				chordObject.third = self.add(chordObject.rootAndOctave, 4);
 				chordObject.intervals.push(4);
 			}
 			else if (chordObject.chord == "min" || chordObject.chord == "m") {
+				chordObject.third = self.add(chordObject.rootAndOctave, 3);
 				chordObject.intervals.push(3);
 			}
 			else {
@@ -182,6 +186,7 @@ MIDI.loadPlugin(function() {
 			
 			if (chordObject.extension != "13")
 				chordObject.intervals.push(7);
+			chordObject.fifth = self.add(chordObject.rootAndOctave, 7);
 		
 			if (chordObject.extension2 == "(b5)")
 				chordObject.intervals.push(6);
@@ -192,10 +197,14 @@ MIDI.loadPlugin(function() {
 			
 			switch(chordObject.extension) {
 				case "7":
-				if (chordObject.chord == "maj" || chordObject.chord == "M")
+				if (chordObject.chord == "maj" || chordObject.chord == "M") {
+					chordObject.seventh = self.add(chordObject.rootAndOctave, 11);
 					chordObject.intervals.push(11);
-				else
+				}
+				else {
+					chordObject.seventh = self.add(chordObject.rootAndOctave, 10);
 					chordObject.intervals.push(10);
+				}
 					
 				if (chordObject.extension2 == "(b9)")
 					chordObject.intervals.push(13);

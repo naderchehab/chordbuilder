@@ -7,21 +7,20 @@ a {
 	color:gray;font-size:small;
 }
 
-.container {
+.page-container {
 display: none;
+margin-top: 50px;
 }
 
 .title {
 	font-size: large;
 }
-.piano
-	{
+.piano {
 	width: 1920px;
 	height: 210px;
 	overflow: hidden;
 	}
-.whitekeycontainer
-	{
+.whitekeycontainer {
 	overflow: hidden;
 	margin: auto auto;
 	width: 1930px;
@@ -31,8 +30,7 @@ display: none;
 	left:auto;
 	top:auto;
 	}
-.whitekey
-	{
+.whitekey {
 	background: white;
 	margin: 0;
 	border-top: 0px outset;
@@ -43,8 +41,7 @@ display: none;
 	width: 1.8%;
 	float: left;
 	}
-.whitekey:hover 
-	{
+.whitekey:hover  {
 	background: #FF9999;
 	margin: 0;
 	border-top: 0px outset #FF9999;
@@ -53,15 +50,13 @@ display: none;
 	border-left: 2px outset #FF9999;
 	float: left;
 	}
-.whitekey:active
-	{
+.whitekey:active {
 	border-top: 0px inset #FF9999;
 	border-right: 2px inset #FF9999;
 	border-bottom: 2px inset #FF9999;
 	border-left: 2px inset #FF9999;
 	}
-.blackkeycontainer
-	{
+.blackkeycontainer {
 	overflow: hidden;
 	margin: 0px;
 	width: 1930px;
@@ -72,8 +67,7 @@ display: none;
 	top:auto;
 	z-index: 1;
 	}
-.blackkey
-	{
+.blackkey {
 	background: black;
 	margin-top:0px;
 	margin-bottom: 0px;
@@ -85,41 +79,25 @@ display: none;
 	width: 1.2%;
 	float: left;
 	}
-.blackkey:hover
-	{
+.blackkey:hover {
 	background: #333333;
 	}
-.blackkey:active 
-	{
+.blackkey:active  {
 	border-top: 0px;
 	border-right: 3px solid #333333;
 	border-bottom: 3px solid #333333;
 	border-left: 3px solid #333333;
 	background: #333333;
 	}
-.blackkey2setcontainer
-	{
+.blackkey2setcontainer  {
 	height: 100%;
 	float: left;
 	}
-.textcontainer
-	{
-	color: black;
-	font-weight: bold;
-	margin-top: 5px;
-	margin-right: auto;
-	margin-bottom: 0px;
-	margin-left: auto;
-	padding:10px;
-	}
-.highlight
-	{
+.highlight {
 	background-color: #67CCF2;
 	}
-ul {
-list-style-type:none;
-padding:5px;
-}
-li {
-padding:5px;
-}
+.loading-indicator {
+	position: absolute;
+	top: 50%;
+	left:50%;
+	}

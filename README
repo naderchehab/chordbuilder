@@ -1,7 +1,9 @@
+Type a list of chords then see them and hear them on the piano
+
 Demo: http://chordbuilder.clanteam.com/
 
 TODO:
-Popup to quizz chords and scales (Add Bootstrap)
+Popup to quizz chords and scales
 List of chord progressions to choose from
 Ability to Save/Load
 Ability to transpose entire chord progressions
