@@ -152,6 +152,10 @@ MIDI.loadPlugin(function() {
 			
 			chordObject.rootAndOctave = self.getNote(chord) + chordObject.octave;
 			
+			chordObject.fifth = self.getNote(self.add(chordObject.rootAndOctave, 7));
+			chordObject.seventh = self.getNote(self.getNote(self.add(chordObject.rootAndOctave, 11)));
+			
+			
 			// console.log(match, chordObject);
 			
 			// No Root
@@ -172,11 +176,11 @@ MIDI.loadPlugin(function() {
 			}
 
 			if (chordObject.chord == "maj" || chordObject.chord == "M" || chordObject.chord == undefined) {
-				chordObject.third = self.add(chordObject.rootAndOctave, 4);
+				chordObject.third = self.getNote(self.add(chordObject.rootAndOctave, 4));
 				chordObject.intervals.push(4);
 			}
 			else if (chordObject.chord == "min" || chordObject.chord == "m") {
-				chordObject.third = self.add(chordObject.rootAndOctave, 3);
+				chordObject.third = self.getNote(self.add(chordObject.rootAndOctave, 3));
 				chordObject.intervals.push(3);
 			}
 			else {
@@ -186,7 +190,6 @@ MIDI.loadPlugin(function() {
 			
 			if (chordObject.extension != "13")
 				chordObject.intervals.push(7);
-			chordObject.fifth = self.add(chordObject.rootAndOctave, 7);
 		
 			if (chordObject.extension2 == "(b5)")
 				chordObject.intervals.push(6);
@@ -198,11 +201,9 @@ MIDI.loadPlugin(function() {
 			switch(chordObject.extension) {
 				case "7":
 				if (chordObject.chord == "maj" || chordObject.chord == "M") {
-					chordObject.seventh = self.add(chordObject.rootAndOctave, 11);
 					chordObject.intervals.push(11);
 				}
 				else {
-					chordObject.seventh = self.add(chordObject.rootAndOctave, 10);
 					chordObject.intervals.push(10);
 				}
 					
