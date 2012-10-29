@@ -25,8 +25,10 @@ MIDI.loadPlugin(function() {
 		
 		// Constructor
 		self.init = function() {
-			$("textarea").val("Ebm7/Bb octave 3\nAb7 octave 3\nDb7/B octave 3\nGbM7/Bb octave 3\nCm7(b5)/Bb octave 3\nBM7/Bb octave 2\nBb7(#5)/Ab octave 2");
+			//$("textarea").val("Ebm7/Bb octave 3\nAb7 octave 3\nDb7/B octave 3\nGbM7/Bb octave 3\nCm7(b5)/Bb octave 3\nBM7/Bb octave 2\nBb7(#5)/Ab octave 2");
 			//$("textarea").val("Dm9/F no root\nG13 octave 2\nCM9/E octave 3 no root\nA7(b9)/G octave 2 no root");
+			//$("textarea").val("CM7\nFM7\nCM7\nFM7\nEbM7\nAbM7\nEbM7\nAbM7\nG7\nCM7");
+			$("textarea").val("C/E\nGm7/Bb\nF");
 
 			self.buildPiano();
 			$("textarea").change(self.btnReset);

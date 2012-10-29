@@ -7,6 +7,7 @@ Type a list of chords then see them and hear them on the piano
 * http://chordbuilder.clanteam.com/
 
 ### TODO
+* Circle of fifth
 * Add Quizz section for chords and scales
 * Add a list of chord progressions to choose from
 * Ability to Save/Load
