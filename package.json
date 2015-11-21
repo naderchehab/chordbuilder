@@ -1,0 +1,22 @@
+{
+  "name": "chordbuilder",
+  "version": "0.0.1",
+  "description": "Type a list of chords then see them and hear them on the piano",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/naderchehab/chordbuilder.git"
+  },
+  "author": "Nader Chehab",
+  "contributors" : [],
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3",
+    "body-parser": "^1.14.1",
+    "errorhandler": "^1.4.2",
+    "method-override": "^2.3.5"
+  }
+}

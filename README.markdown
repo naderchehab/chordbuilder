@@ -4,7 +4,7 @@ Chord Builder
 Type a list of chords then see them and hear them on the piano
 
 ### Demo
-* http://chordbuilder.clanteam.com/
+* http://chordbuilder.herokuapp.com/
 
 ### TODO
 * Circle of fifth

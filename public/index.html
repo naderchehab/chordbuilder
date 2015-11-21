@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Piano Chord Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Type a list of chords then see them and hear them on the piano">
+    <meta name="author" content="Nader Chehab">
+
+    <!-- Le styles -->
+	<!--<link href="chordbuilder.min.css" rel="stylesheet">-->
+	<link href="css/bootstrap.css" rel="stylesheet" />
+	<link href="css/chordbuilder.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Chord Builder</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Chord Builder</a></li>
+              <li><a href="#about">Quizz</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+	<div class="loading-indicator"><img src="img/loading-indicator.gif" /></div>
+	<div class="container-fluid page-container">
+		<div class="piano">
+		</div>
+		<div class="row">
+			<div class="span12">
+				<div class="form-vertical">
+					<div class="container-fluid">
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label"><h3>Chord List</h3></label>
+									<p class="help-block">Enter one chord per line</p>
+									<div class="controls">
+										<textarea id="chordlist" style="height:165px; width: 400px;"></textarea>
+									</div>
+								</div>
+							</div>
+							<div class="span4">
+								<div class="control-group">
+									<label class="control-label"><h3>Information</h3></label>
+									<p class="help-block">Individual notes from current chord</p>
+									<div class="controls">
+										<div class="container">
+											<div class="row">
+												<div class="span4" style="margin-left:15px">
+													<table class="table table-bordered table-striped">
+													<tr>
+														<td>Chord:</td>
+														<td><span class="chordName"></span></td>
+													</tr>
+													<tr>
+														<td>Root:</td>
+														<td><span class="rootName"></span></td>
+													</tr>
+													<tr>
+														<td>Third:</td>
+														<td><span class="third"></span></td>
+													</tr>
+													<tr>
+														<td>Fifth:</td>
+														<td><span class="fifth"></span></td>
+													</tr>
+													<tr>
+														<td>7th:</td>
+														<td><span class="seventh"></span></td>
+													</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span12">
+								<div class="form-actions">
+									<button class="btn btnPrev" style="width: 200px;font-size:larger">Prev</button>
+									<button class="btn btnReset" style="width: 200px;font-size:larger">Reset</button>
+									<button class="btn btnPlay" style="width: 200px;font-size:larger">Play</button>
+									<button class="btn btnNext" style="width: 200px;font-size:larger">Next</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<a href="https://github.com/naderchehab/chordbuilder" target="_blank">Created by NC</a>
+		</footer>
+	</div>
+
+    <!-- Le javascript
+    ================================================== -->
+	<script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+	<!-- polyfill -->
+	<script src="js/inc/shim/Base64.js" type="text/javascript"></script>
+	<script src="js/inc/shim/Base64binary.js" type="text/javascript"></script>
+	<script src="js/inc/shim/WebAudioAPI.js" type="text/javascript"></script>
+	<!-- midi.js package -->
+	<script src="js/midi/audioDetect.js" type="text/javascript"></script>
+	<script src="js/midi/gm.js" type="text/javascript"></script>
+	<script src="js/midi/loader.js" type="text/javascript"></script>
+	<script src="js/midi/plugin.audiotag.js" type="text/javascript"></script>
+	<script src="js/midi/plugin.webaudio.js" type="text/javascript"></script>
+	<script src="js/midi/plugin.webmidi.js" type="text/javascript"></script>
+	<!-- utils -->
+	<script src="js/util/dom_request_xhr.js" type="text/javascript"></script>
+	<script src="js/util/dom_request_script.js" type="text/javascript"></script>
+
+	<script src="js/chordbuilder.js" type="text/javascript"></script>
+
+  </body>
+</html>
